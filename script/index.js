@@ -1,5 +1,5 @@
-import { el, setChildren } from "redom/dist/redom.es.js";
-import IMask from "imask/dist/imask.js";
+import { el, setChildren } from "../node_modules/redom/dist/redom.es.js";
+import IMask from "../node_modules/imask/dist/imask.js";
 
 const renderCard = () => {
   const creditCard = el('div', { className: 'credit-card' });
