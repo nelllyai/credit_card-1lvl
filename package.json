@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "imask": "^6.4.3",
+    "redom": "^3.29.1"
+  },
+  "devDependencies": {
+    "parcel": "^2.8.2"
+  }
+}
