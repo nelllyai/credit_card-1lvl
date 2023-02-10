@@ -201,7 +201,12 @@
 }
 
 .input__cvv {
-  padding: 19px 33px;
+  padding: 19px 28px;
+}
+
+.secure-wrapper {
+  padding-top: 10px;
+  text-align: center;
 }
 
 .js-validate-error-label {

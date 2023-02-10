@@ -1,5 +1,6 @@
 import { el, setChildren } from "../node_modules/redom/dist/redom.es.js";
 import IMask from "../node_modules/imask/dist/imask.js";
+import isValid from "./validation.js";
 
 const renderCard = () => {
   const creditCard = el('div', { className: 'credit-card' });
@@ -22,23 +23,26 @@ const renderCard = () => {
   const wrapperNumber = el('div.form__input-wrap.form__input-wrap_number',
     [el('label.form__label.form__number-label', 'Card Number'),
     inputNumber]);
-  const numberMask = new IMask(inputNumber, {mask: '0000 0000 0000 0000'});
+  new IMask(inputNumber, {mask: '0000 0000 0000 0000'});
 
   const inputDate = el('input.input.input__date', {type: 'text', maxlength: '5'});
   const wrapperDate = el('div.form__input-wrap.form__input-wrap_date',
     [el('label.form__label.form__date-label', 'Card Expiry'),
     inputDate]);
-  const dateMask = new IMask(inputDate, {mask: '00{/}00', autofix: true});
+  new IMask(inputDate, {mask: '00{/}00', autofix: true});
 
   const inputCvv = el('input.input.input__cvv', {type: 'text'});
   const wrapperCvv = el('div.form__input-wrap.form__input-wrap_cvv',
     [el('label.form__label.form__cvv-label', 'CVV'),
     inputCvv]);
-  const cvvMask = new IMask(inputCvv, {mask: '000', lazy: false});
+  new IMask(inputCvv, {mask: '0000'});
 
   const btn = el('button.form__button', 'CHECK OUT');
 
   setChildren(form, wrapperHolder, wrapperNumber, wrapperDate, wrapperCvv, btn);
+
+  const secureWrapper = el('div.secure-wrapper');
+  const secureBlock = el('p', { className: 'secure' }, 'Secure Checkout');
 
   form.addEventListener('input', ({target}) => {
     const value = target.value;
@@ -58,13 +62,27 @@ const renderCard = () => {
   form.addEventListener('submit', event => {
     event.preventDefault();
 
-    if (!inputHolder.value || !numberMask.masked.isComplete ||
-      !dateMask.masked.isComplete || !cvvMask.masked.isComplete) {
-      alert('Заполните все данные!');
+    const cardInfo = {
+      name: inputHolder.value,
+      number: inputNumber.value.replace(/\s/g, ''),
+      code: inputCvv.value
+    };
+    
+    const validationText = el('h2');
+    
+    if (!isValid(cardInfo)) {
+      validationText.textContent = 'Данные не валидны!';
+    } else {
+      validationText.textContent = 'Данные корректны';
     }
+
+    setChildren(secureWrapper, validationText);
+    setTimeout(() => {
+      validationText.remove();
+    }, 2000);
   });
 
-  return el('div', { className: 'card' }, [el('p', { className: 'secure' }, 'Secure Checkout'), creditCard, form]);
+  return el('div', { className: 'card' }, [secureBlock, creditCard, form, secureWrapper]);
 };
 
 setChildren(document.querySelector('.wrapper'), renderCard());
